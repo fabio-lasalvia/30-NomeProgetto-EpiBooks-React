@@ -1,0 +1,42 @@
+my-app/
+├── public/                   # File statici, index.html, favicon, ecc.
+│   └── index.html
+├── src/                      # Tutto il codice React vive qui dentro
+│   ├── assets/               # Immagini, font, SVG, ecc.
+│   ├── components/           # Componenti riutilizzabili (Button, Navbar, Card...)
+│   ├── layout/               # Strutture di layout condivise (MainLayout, AdminLayout...)
+│   ├── pages/                # Pagine vere e proprie (Home, About, ecc.)
+│   ├── routes/               # Definizione delle rotte
+│   ├── services/             # Funzioni che gestiscono API, fetch, auth, ecc.
+│   ├── utils/                # Funzioni di utilità (formatDate, capitalizza stringhe, ecc.)
+│   ├── hooks/                # Custom hooks (es. useAuth, useFetch)
+│   ├── styles/               # CSS globali o configurazioni Tailwind/SCSS
+│   ├── App.jsx               # Componente root
+│   ├── main.jsx              # Entry point ReactDOM (Vite) o index.js (CRA)
+│   └── vite-env.d.ts         # Se usi TypeScript
+├── .gitignore
+├── package.json
+├── vite.config.js            # Solo se usi Vite
+└── README.md
+ 
+ ------------------------------------------------------------------------------------------------------------
+
+ my-app/
+├── public/                   # File statici, index.html, favicon, ecc.
+│   └── img/                  # Immagini, font, SVG, ecc.
+|       ├──logo
+|       ├──favicon
+|       └──hero
+|
+├── src/                      # Tutto il codice React vive qui dentro│   
+│   ├── components/           # Componenti riutilizzabili (Button, Navbar, Card...)
+│   ├── layout/               # Strutture di layout condivise (MainLayout, AdminLayout...)
+│   ├── pages/                # Pagine vere e proprie (Home, About, ecc.)
+│   ├── App.jsx               # Componente root
+│   └── main.jsx              # Entry point ReactDOM (Vite) o index.js (CRA)
+|
+├── index.html
+├── .gitignore
+├── package.json
+├── vite.config.js            # Utilizzo Vite
+└── README.md

@@ -1,0 +1,220 @@
+SRC:
+
+
+-main.jsx:
+
+import { StrictMode } from 'react'
+import { createRoot } from 'react-dom/client'
+
+import App from './App.jsx'
+
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+
+createRoot(document.getElementById('root')).render(
+  <StrictMode>
+    <App />
+  </StrictMode>,
+)
+
+
+-App.jsx:
+
+import MainLayout from "./layout/MainLayout"
+
+function App() {
+  
+
+  return (
+    <>
+      
+      <MainLayout/>
+
+    </>
+  )
+}
+
+export default App
+
+SRC/LAYOUT:
+
+-MainLayout.jsx:
+
+import React, { useEffect, useState } from "react";
+import Topbar from "../components/Topbar";
+import Sidebar from "../components/Sidebar";
+import Hero from "../components/Hero";
+
+function MainLayout() {
+
+    // const [cosaC’èDentro, funzionePerCambiarlo] = useState(valoreIniziale);
+    const [sidebarAperta, setSidebarAperta] = useState(true);
+
+    // Carica il valore iniziale dal localStorage
+    const [temaChiaro, setTemaChiaro] = useState(() => {
+        const salvato = localStorage.getItem("temaChiaro");
+        return salvato === null ? true : salvato === "true";
+    });
+
+    // Quando cambia temaChiaro, aggiorna il localStorage e il body
+    useEffect(() => {
+        localStorage.setItem("temaChiaro", temaChiaro);
+        document.body.classList.remove("temaScuro", "temaChiaro");
+        document.body.classList.add(temaChiaro ? "temaChiaro" : "temaScuro");
+    }, [temaChiaro]);
+
+    return (
+        <>
+            {/* TOPBAR */}
+            <Topbar
+                toggleSidebar={() => setSidebarAperta(!sidebarAperta)}
+                toggleTema={() => setTemaChiaro(!temaChiaro)}
+            />
+
+            {/* SIDEBAR */}
+            {sidebarAperta && <Sidebar />}      {/* condizione && cosaFareSeVera */}
+
+            <Hero/>
+
+        </>
+    )
+
+}
+
+export default MainLayout
+
+SRC/COMPONENTS:
+
+-Sidebar.jsx:
+
+import React, { useState } from "react";
+import { Button, Offcanvas, Nav } from 'react-bootstrap';
+import { List } from 'react-bootstrap-icons';
+
+function Sidebar() {
+    // Stato per controllare la visibilità della sidebar su schermi piccoli
+    const [show, setShow] = useState(false);
+
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
+
+    // Contenuto della sidebar riutilizzabile
+    const sidebarContent = (
+        <Nav className="flex-column p-3 gap-3">
+            {/* Home */}
+            <Button href="/home" className="btn-secondary" active>Home</Button>
+            {/* Anagrafica Clienti */}
+            <Button href="/anagraficaClienti" className="btn-secondary">Anagrafica Clienti</Button>
+            {/* Anagrafica Prodotti */}
+            <Button href="/anagraficaProdotti" className="btn-secondary">Anagrafica Prodotti</Button>
+            {/* Fatture */}
+            <Button href="/fatture" className="btn-secondary">Fatture</Button>
+        </Nav>
+    );
+
+    return (
+        <>
+
+            {/* Btn hamburger */}
+            <Button variant="outline-secondary" className="d-lg-none m-2" onClick={handleShow}>
+                <List size={24} />
+            </Button>
+
+            {/* Componente Offcanvas */}
+            <Offcanvas show={show} onHide={handleClose} responsive="lg">
+                <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Menù</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body className="p-0">
+                    {sidebarContent}
+                </Offcanvas.Body>
+            </Offcanvas>
+        </>
+    );
+}
+
+export default Sidebar;
+
+-Topbar.jsx:
+import React from "react";
+import { Form, Button } from 'react-bootstrap';
+
+// Non c'è più bisogno di Navbar, usiamo la struttura originale con div e flexbox
+function Topbar({ toggleTema }) {
+    return (
+        <div className="topbar d-flex justify-content-between align-items-center shadow p-2 gap-3">
+
+            {/* SINISTRA: Logo */}
+            <a href="/home" className="flex-shrink-0">
+                <img src="/img/logo/faviconOrdhalion0.png" alt="Logo Gestionale Ordhalion" className="rounded" style={{ width: "50px", height: "auto" }} />
+            </a>
+
+            {/* DESTRA: Contenitore per tutti gli elementi a destra */}
+            <div className="d-flex align-items-center flex-grow-1 justify-content-end gap-2">
+
+                {/* Searchbar */}
+                <Form className="w-100" style={{ maxWidth: '400px' }}>
+                    <Form.Control
+                        type="search"
+                        placeholder="Cerca.."
+                    />
+                </Form>
+
+                {/* Pulsanti Icona */}
+                <Button variant="outline-secondary" onClick={toggleTema} className="flex-shrink-0">
+                    <i className="bi bi-moon"></i>
+                </Button>
+
+                <a href="/profilo" className="btn btn-outline-secondary flex-shrink-0">
+                    <i className="bi bi-person-circle fs-4"></i>
+                </a>
+
+                <a href="/impostazioni" className="btn btn-outline-secondary flex-shrink-0">
+                    <i className="bi bi-gear fs-4"></i>
+                </a>
+            </div>
+
+        </div>
+    );
+}
+
+export default Topbar;
+
+-Heo.jsx:
+
+import Carousel from 'react-bootstrap/Carousel';
+
+function Hero() {
+    return (
+        <Carousel>
+            {/* SLIDE 1 */}
+            <Carousel.Item>
+                <img text="First slide" />
+                <Carousel.Caption>
+                    <h3>First slide label</h3>
+                    <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
+                </Carousel.Caption>
+            </Carousel.Item>
+            {/* SLIDE 2 */}
+            <Carousel.Item>
+                <img text="Second slide" />
+                <Carousel.Caption>
+                    <h3>Second slide label</h3>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+                </Carousel.Caption>
+            </Carousel.Item>
+            {/* SLIDE 3 */}
+            <Carousel.Item>
+                <img text="Third slide" />
+                <Carousel.Caption>
+                    <h3>Third slide label</h3>
+                    <p>
+                        Praesent commodo cursus magna, vel scelerisque nisl consectetur.
+                    </p>
+                </Carousel.Caption>
+            </Carousel.Item>
+        </Carousel>
+    );
+}
+
+export default Hero;

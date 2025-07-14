@@ -1,0 +1,25 @@
+body {
+    transition: background-color 0.3s ease, color 0.3s ease;
+    background-color: white;
+    color: black;
+}
+
+.temaScuro {
+    background-color: rgb(48, 48, 48);
+    color: white;
+}
+
+.temaChiaro {
+    background-color: white;
+    color: black;
+}
+
+.footer-link {
+    text-decoration: none;
+    color: inherit;
+}
+
+a:hover,
+.footer-link:hover {
+    color: #ffbf00;
+}
