@@ -35,7 +35,7 @@ function Footer() {
 
                     </Col>
 
-                    <p className="text-center mt-4">&copy; EpicBooks 2025. Tutti i diritti riservati.</p>
+                    <p className="text-center mt-4">&copy; Epi Books 2025. Tutti i diritti riservati.</p>
 
                 </Row>
 
