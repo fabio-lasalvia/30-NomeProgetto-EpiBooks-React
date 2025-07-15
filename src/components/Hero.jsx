@@ -5,7 +5,7 @@ import './Hero.css';
 function Hero() {
   return (
     <div className="hero-section" >
-      <Carousel fade controls indicators>
+      <Carousel fade controls indicators style={{ borderRadius: '30px', overflow: 'hidden' }}>
         {/* SLIDE 1 - Fantasy */}
         <Carousel.Item>
           <Link to="/fantasy" title="Vai alla sezione Libri Fantasy" className="d-block position-relative">
