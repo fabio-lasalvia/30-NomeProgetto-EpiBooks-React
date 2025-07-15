@@ -14,8 +14,9 @@ function BookSection({ books, category }) {
                             <Card className="mb-3 h-100">
                                 <Card.Img variant="top" src={book.img} alt={book.title} style={{ height: '400px', width: '100%', objectFit: 'cover' }} className="img-fluid" />
                                 <Card.Body className="d-flex flex-column">
-                                    <Card.Title className="text-truncate">{book.title}</Card.Title>
+                                    <Card.Title title={book.title} className="text-truncate">{book.title}</Card.Title>
                                     <Card.Text className="text-center fst-italic fw-semibold text-primary">Prezzo: € {book.price}</Card.Text>
+
                                     <Button variant="primary" className="mt-auto">Aggiungi</Button>
                                 </Card.Body>
                             </Card>

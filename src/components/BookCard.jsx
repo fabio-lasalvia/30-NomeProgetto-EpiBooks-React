@@ -11,8 +11,8 @@ function BookCard({ img, title, category }) {
     <Card style={{ width: "18rem" }} className="mb-3">
       <Card.Img variant="top" src={img} alt={title} />
       <Card.Body>
-        <Card.Title>{title}</Card.Title>
-        <Card.Text>{category}</Card.Text>
+        <Card.Title title={title}>{title}</Card.Title>
+        <Card.Text title={category}>{category}</Card.Text>
         <Button variant="primary" onClick={handleClick}>Aggiungi ({count})</Button>
       </Card.Body>
     </Card>

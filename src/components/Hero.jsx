@@ -4,52 +4,85 @@ import './Hero.css';
 
 function Hero() {
   return (
-    <div className="hero-section">
+    <div className="hero-section" >
       <Carousel fade controls indicators>
         {/* SLIDE 1 - Fantasy */}
         <Carousel.Item>
-          <Link to="/fantasy">
+          <Link to="/fantasy" title="Vai alla sezione Libri Fantasy" className="d-block position-relative">
             <img
-              src="/img/hero/heroFantasy.png"
+              src="/img/heroPronte/heroFantasy.png"
               alt="Copertina Libri Fantasy"
               className="carousel-img d-block w-100"
             />
             <div className="hero-overlay" />
             <Carousel.Caption>
-              <h3>Fantasy</h3>
+              <h3 className="fw-bold">Fantasy</h3>
               <p>Dove la realtà finisce, comincia la magia.</p>
             </Carousel.Caption>
           </Link>
         </Carousel.Item>
 
-        {/* SLIDE 2 - Avventura */}
+        {/* SLIDE 2 - History */}
         <Carousel.Item>
-          <Link to="/avventura">
+          <Link to="/history" title="Vai alla sezione Libri Storici" className="d-block position-relative">
             <img
-              src="/img/hero/heroAdventure.png"
-              alt="Copertina Libri Avventura"
+              src="/img/heroPronte/heroHistory.jpg"
+              alt="Copertina Libri Storici"
               className="carousel-img d-block w-100"
             />
             <div className="hero-overlay" />
-            <Carousel.Caption>
-              <h3>Avventura</h3>
-              <p>Brividi, mappe segrete e colpi di scena dietro ogni angolo.</p>
+
+            <Carousel.Caption className="text-shadow-sm">
+              <h3 className="fw-bold">Storici</h3>
+              <p>Viaggi nel tempo tra imperi, battaglie e figure leggendarie del passato.</p>
             </Carousel.Caption>
           </Link>
         </Carousel.Item>
 
-        {/* SLIDE 3 - Romantico */}
+        {/* SLIDE 3 - Horror */}
         <Carousel.Item>
-          <Link to="/romantico">
+          <Link to="/horror" title="Vai alla sezione Libri Horror" className="d-block position-relative">
             <img
-              src="/img/hero/heroRomance.png"
+              src="/img/heroPronte/heroHorror.jpg"
+              alt="Copertina Libri Horror"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+            <Carousel.Caption className="text-shadow-sm">
+              <h3 className="fw-bold">Horror</h3>
+              <p>Dove le ombre raccontano storie…e i libri respirano nel buio.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+
+        {/* SLIDE 4 - Romantico */}
+        <Carousel.Item>
+          <Link to="/romantico" title="Vai alla sezione Libri Romance" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroRomance.jpg"
               alt="Copertina Libri Romantici"
               className="carousel-img d-block w-100"
             />
             <div className="hero-overlay" />
             <Carousel.Caption>
-              <h3>Romantico</h3>
+              <h3 className="fw-bold">Romantico</h3>
               <p>Per chi crede nei colpi di fulmine…e nei finali scritti bene.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+
+        {/* SLIDE 5 - Sci-Fi */}
+        <Carousel.Item>
+          <Link to="/scifi" title="Vai alla sezione Libri Sci-Fi" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroSciFi.jpg"
+              alt="Copertina Libri Sci-Fi"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+            <Carousel.Caption>
+              <h3 className="fw-bold">Sci-Fi</h3>
+              <p>Galassie lontane, intelligenze artificiali e confini della realtà da esplorare.</p>
             </Carousel.Caption>
           </Link>
         </Carousel.Item>
