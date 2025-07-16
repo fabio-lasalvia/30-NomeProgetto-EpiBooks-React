@@ -6,6 +6,8 @@ import Topbar from "../components/Topbar";
 import Footer from "../components/Footer";
 
 function MainLayout() {
+
+    // Tema
     const [temaChiaro, setTemaChiaro] = useState(() => {
         const salvato = localStorage.getItem("temaChiaro");
         return salvato === null ? true : salvato === "true";
@@ -17,14 +19,20 @@ function MainLayout() {
         document.body.classList.add(temaChiaro ? "temaChiaro" : "temaScuro");
     }, [temaChiaro]);
 
+    // Filtro di ricerca
+    const [filtroRicerca, setFiltroRicerca] = useState("")
+
     return (
         <div className="d-flex flex-column min-vh-100">
-            <Topbar toggleTema={() => setTemaChiaro(!temaChiaro)} />
+            <Topbar
+                toggleTema={() => setTemaChiaro(!temaChiaro)}
+                onSearchChange={setFiltroRicerca}
+            />
 
             <Container fluid className="flex-grow-1">
                 <Row className="h-100">
                     <Col>
-                        <Outlet />
+                        <Outlet context={{filtroRicerca, temaChiaro}} />
                     </Col>
                 </Row>
             </Container>

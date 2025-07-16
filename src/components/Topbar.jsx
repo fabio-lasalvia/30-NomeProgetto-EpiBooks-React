@@ -1,14 +1,11 @@
 import React from "react";
-import { Form, Button, Nav } from 'react-bootstrap';
+import { Form, Button, Nav, InputGroup, Dropdown } from 'react-bootstrap';
 
-function Topbar({ toggleTema }) {
+function Topbar({ toggleTema, onSearchChange }) {
     return (
-        <div className="topbar d-flex justify-content-between align-items-center shadow p-2 gap-3 flex-wrap">
-
-            {/* SINISTRA: Logo + Menu */}
+        <div className="topbar d-flex justify-content-between align-items-center shadow p-2 gap-3 flex-wrap mb-5">
+            {/* SINISTRA: Logo + Menù */}
             <div className="d-flex align-items-center gap-4 flex-grow-1 flex-wrap">
-
-                {/* Logo */}
                 <a href="/home" className="flex-shrink-0">
                     <img
                         src="/img/logo/logoEpiBooks.png"
@@ -17,8 +14,6 @@ function Topbar({ toggleTema }) {
                         style={{ width: "180px", height: "auto" }}
                     />
                 </a>
-
-                {/* Menu principale */}
                 <Nav className="d-flex gap-2 flex-wrap">
                     <Nav.Link href="/home" className="btn btn-outline-secondary">Home</Nav.Link>
                     <Nav.Link href="/catalogo" className="btn btn-outline-secondary">Catalogo</Nav.Link>
@@ -28,30 +23,38 @@ function Topbar({ toggleTema }) {
             </div>
 
             {/* DESTRA: Searchbar + Icone */}
-            <div className="d-flex align-items-center justify-content-end gap-2 flex-wrap">
-
-                {/* Searchbar */}
-                <Form className="flex-grow-1" style={{ maxWidth: '400px' }}>
+            <div className="d-flex align-items-center justify-content-end gap-2">
+                <InputGroup className="flex-grow-1" style={{ maxWidth: '300px' }}>
                     <Form.Control
                         type="search"
-                        placeholder="Cerca.."
+                        placeholder="Cerca..."
+                        aria-label="Campo di ricerca"
+                        onChange={(e) => onSearchChange(e.target.value)}
                     />
-                </Form>
+                    <Button variant="outline-secondary">
+                        <i className="bi bi-search"></i>
+                    </Button>
+                </InputGroup>
 
-                {/* Pulsanti Icona */}
-                <Button variant="outline-secondary" onClick={toggleTema} className="flex-shrink-0">
-                    <i className="bi bi-moon"></i>
-                </Button>
+                {/* Dropdown Profilo */}
+                <Dropdown align="end">
+                    <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" className="d-flex align-items-center">
+                        <i className="bi bi-person-circle fs-4"></i>
+                    </Dropdown.Toggle>
 
-                <a href="/profilo" className="btn btn-outline-secondary flex-shrink-0">
-                    <i className="bi bi-person-circle fs-4"></i>
-                </a>
-
-                <a href="/impostazioni" className="btn btn-outline-secondary flex-shrink-0">
-                    <i className="bi bi-gear fs-4"></i>
-                </a>
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={toggleTema}>
+                            <i className="bi bi-moon me-2"></i> Cambia tema
+                        </Dropdown.Item>
+                        <Dropdown.Item href="/profilo">
+                            <i className="bi bi-person me-2"></i> Profilo
+                        </Dropdown.Item>
+                        <Dropdown.Item href="/impostazioni">
+                            <i className="bi bi-gear me-2"></i> Impostazioni
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
             </div>
-
         </div>
     );
 }

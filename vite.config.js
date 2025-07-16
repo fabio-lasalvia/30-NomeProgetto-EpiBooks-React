@@ -3,6 +3,6 @@ import react from '@vitejs/plugin-react'
 
 // https://vite.dev/config/
 export default defineConfig({
-  base: '/30-NomeProgetto-EpicBooks-React/',
+  //base: '/30-NomeProgetto-EpicBooks-React/',
   plugins: [react()],
 })

@@ -20,201 +20,392 @@ createRoot(document.getElementById('root')).render(
 
 -App.jsx:
 
-import MainLayout from "./layout/MainLayout"
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+
+import MainLayout from './layout/MainLayout';
+
+import Home from './pages/Home';
+
+
 
 function App() {
-  
-
   return (
-    <>
-      
-      <MainLayout/>
-
-    </>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<MainLayout />}>
+          <Route index element={<Home />} />
+          <Route path="home" element={<Home />} />          
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
+
 
 SRC/LAYOUT:
 
 -MainLayout.jsx:
 
 import React, { useEffect, useState } from "react";
+import { Container, Row, Col } from 'react-bootstrap';
+import { Outlet } from 'react-router-dom'; // Outlet è il segnaposto dove verranno renderizzate le route figlie (routes annidate o nested routes)
+
 import Topbar from "../components/Topbar";
-import Sidebar from "../components/Sidebar";
-import Hero from "../components/Hero";
+import Footer from "../components/Footer";
 
 function MainLayout() {
 
-    // const [cosaC’èDentro, funzionePerCambiarlo] = useState(valoreIniziale);
-    const [sidebarAperta, setSidebarAperta] = useState(true);
-
-    // Carica il valore iniziale dal localStorage
+    // Tema
     const [temaChiaro, setTemaChiaro] = useState(() => {
         const salvato = localStorage.getItem("temaChiaro");
         return salvato === null ? true : salvato === "true";
     });
 
-    // Quando cambia temaChiaro, aggiorna il localStorage e il body
     useEffect(() => {
         localStorage.setItem("temaChiaro", temaChiaro);
         document.body.classList.remove("temaScuro", "temaChiaro");
         document.body.classList.add(temaChiaro ? "temaChiaro" : "temaScuro");
     }, [temaChiaro]);
 
+    // Filtro di ricerca
+    const [filtroRicerca, setFiltroRicerca] = useState("")
+
     return (
-        <>
-            {/* TOPBAR */}
+        <div className="d-flex flex-column min-vh-100">
             <Topbar
-                toggleSidebar={() => setSidebarAperta(!sidebarAperta)}
                 toggleTema={() => setTemaChiaro(!temaChiaro)}
+                onSearchChange={setFiltroRicerca}
             />
 
-            {/* SIDEBAR */}
-            {sidebarAperta && <Sidebar />}      {/* condizione && cosaFareSeVera */}
+            <Container fluid className="flex-grow-1">
+                <Row className="h-100">
+                    <Col>
+                        <Outlet context={{filtroRicerca, temaChiaro}} />
+                    </Col>
+                </Row>
+            </Container>
 
-            <Hero/>
-
-        </>
-    )
-
+            <Footer />
+        </div>
+    );
 }
 
-export default MainLayout
+export default MainLayout;
+
 
 SRC/COMPONENTS:
 
--Sidebar.jsx:
-
-import React, { useState } from "react";
-import { Button, Offcanvas, Nav } from 'react-bootstrap';
-import { List } from 'react-bootstrap-icons';
-
-function Sidebar() {
-    // Stato per controllare la visibilità della sidebar su schermi piccoli
-    const [show, setShow] = useState(false);
-
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
-
-    // Contenuto della sidebar riutilizzabile
-    const sidebarContent = (
-        <Nav className="flex-column p-3 gap-3">
-            {/* Home */}
-            <Button href="/home" className="btn-secondary" active>Home</Button>
-            {/* Anagrafica Clienti */}
-            <Button href="/anagraficaClienti" className="btn-secondary">Anagrafica Clienti</Button>
-            {/* Anagrafica Prodotti */}
-            <Button href="/anagraficaProdotti" className="btn-secondary">Anagrafica Prodotti</Button>
-            {/* Fatture */}
-            <Button href="/fatture" className="btn-secondary">Fatture</Button>
-        </Nav>
-    );
-
-    return (
-        <>
-
-            {/* Btn hamburger */}
-            <Button variant="outline-secondary" className="d-lg-none m-2" onClick={handleShow}>
-                <List size={24} />
-            </Button>
-
-            {/* Componente Offcanvas */}
-            <Offcanvas show={show} onHide={handleClose} responsive="lg">
-                <Offcanvas.Header closeButton>
-                    <Offcanvas.Title>Menù</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body className="p-0">
-                    {sidebarContent}
-                </Offcanvas.Body>
-            </Offcanvas>
-        </>
-    );
-}
-
-export default Sidebar;
 
 -Topbar.jsx:
 import React from "react";
-import { Form, Button } from 'react-bootstrap';
+import { Form, Button, Nav, InputGroup, Dropdown } from 'react-bootstrap';
 
-// Non c'è più bisogno di Navbar, usiamo la struttura originale con div e flexbox
-function Topbar({ toggleTema }) {
+function Topbar({ toggleTema, onSearchChange }) {
     return (
-        <div className="topbar d-flex justify-content-between align-items-center shadow p-2 gap-3">
-
-            {/* SINISTRA: Logo */}
-            <a href="/home" className="flex-shrink-0">
-                <img src="/img/logo/faviconOrdhalion0.png" alt="Logo Gestionale Ordhalion" className="rounded" style={{ width: "50px", height: "auto" }} />
-            </a>
-
-            {/* DESTRA: Contenitore per tutti gli elementi a destra */}
-            <div className="d-flex align-items-center flex-grow-1 justify-content-end gap-2">
-
-                {/* Searchbar */}
-                <Form className="w-100" style={{ maxWidth: '400px' }}>
-                    <Form.Control
-                        type="search"
-                        placeholder="Cerca.."
+        <div className="topbar d-flex justify-content-between align-items-center shadow p-2 gap-3 flex-wrap mb-5">
+            {/* SINISTRA: Logo + Menù */}
+            <div className="d-flex align-items-center gap-4 flex-grow-1 flex-wrap">
+                <a href="/home" className="flex-shrink-0">
+                    <img
+                        src="/img/logo/logoEpiBooks.png"
+                        alt="Logo Epi Books"
+                        className="rounded img-fluid ms-2"
+                        style={{ width: "180px", height: "auto" }}
                     />
-                </Form>
-
-                {/* Pulsanti Icona */}
-                <Button variant="outline-secondary" onClick={toggleTema} className="flex-shrink-0">
-                    <i className="bi bi-moon"></i>
-                </Button>
-
-                <a href="/profilo" className="btn btn-outline-secondary flex-shrink-0">
-                    <i className="bi bi-person-circle fs-4"></i>
                 </a>
-
-                <a href="/impostazioni" className="btn btn-outline-secondary flex-shrink-0">
-                    <i className="bi bi-gear fs-4"></i>
-                </a>
+                <Nav className="d-flex gap-2 flex-wrap">
+                    <Nav.Link href="/home" className="btn btn-outline-secondary">Home</Nav.Link>
+                    <Nav.Link href="/catalogo" className="btn btn-outline-secondary">Catalogo</Nav.Link>
+                    <Nav.Link href="/categorie" className="btn btn-outline-secondary">Categorie</Nav.Link>
+                    <Nav.Link href="/carrello" className="btn btn-outline-secondary">Carrello</Nav.Link>
+                </Nav>
             </div>
 
+            {/* DESTRA: Searchbar + Icone */}
+            <div className="d-flex align-items-center justify-content-end gap-2">
+                <InputGroup className="flex-grow-1" style={{ maxWidth: '300px' }}>
+                    <Form.Control
+                        type="search"
+                        placeholder="Cerca..."
+                        aria-label="Campo di ricerca"
+                        onChange={(e) => onSearchChange(e.target.value)}
+                    />
+                    <Button variant="outline-secondary">
+                        <i className="bi bi-search"></i>
+                    </Button>
+                </InputGroup>
+
+                {/* Dropdown Profilo */}
+                <Dropdown align="end">
+                    <Dropdown.Toggle variant="outline-secondary" id="dropdown-basic" className="d-flex align-items-center">
+                        <i className="bi bi-person-circle fs-4"></i>
+                    </Dropdown.Toggle>
+
+                    <Dropdown.Menu>
+                        <Dropdown.Item onClick={toggleTema}>
+                            <i className="bi bi-moon me-2"></i> Cambia tema
+                        </Dropdown.Item>
+                        <Dropdown.Item href="/profilo">
+                            <i className="bi bi-person me-2"></i> Profilo
+                        </Dropdown.Item>
+                        <Dropdown.Item href="/impostazioni">
+                            <i className="bi bi-gear me-2"></i> Impostazioni
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            </div>
         </div>
     );
 }
 
 export default Topbar;
 
--Heo.jsx:
 
+
+-Hero.jsx:
+
+import { Link } from 'react-router-dom';
 import Carousel from 'react-bootstrap/Carousel';
+import './Hero.css';
 
 function Hero() {
-    return (
-        <Carousel>
-            {/* SLIDE 1 */}
-            <Carousel.Item>
-                <img text="First slide" />
-                <Carousel.Caption>
-                    <h3>First slide label</h3>
-                    <p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-                </Carousel.Caption>
-            </Carousel.Item>
-            {/* SLIDE 2 */}
-            <Carousel.Item>
-                <img text="Second slide" />
-                <Carousel.Caption>
-                    <h3>Second slide label</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-                </Carousel.Caption>
-            </Carousel.Item>
-            {/* SLIDE 3 */}
-            <Carousel.Item>
-                <img text="Third slide" />
-                <Carousel.Caption>
-                    <h3>Third slide label</h3>
-                    <p>
-                        Praesent commodo cursus magna, vel scelerisque nisl consectetur.
-                    </p>
-                </Carousel.Caption>
-            </Carousel.Item>
-        </Carousel>
-    );
+  return (
+    <div className="hero-section" >
+      <Carousel fade controls indicators style={{ borderRadius: '35px', overflow: 'hidden' }}>
+        {/* SLIDE 1 - Fantasy */}
+        <Carousel.Item>
+          <Link to="/fantasy" title="Vai alla sezione Libri Fantasy" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroFantasy.png"
+              alt="Copertina Libri Fantasy"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+            <Carousel.Caption>
+              <h3 className="fw-bold">Fantasy</h3>
+              <p>Dove la realtà finisce, comincia la magia.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+
+        {/* SLIDE 2 - History */}
+        <Carousel.Item>
+          <Link to="/history" title="Vai alla sezione Libri Storici" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroHistory.jpg"
+              alt="Copertina Libri Storici"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+
+            <Carousel.Caption className="text-shadow-sm">
+              <h3 className="fw-bold">Storici</h3>
+              <p>Viaggi nel tempo tra imperi, battaglie e figure leggendarie del passato.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+
+        {/* SLIDE 3 - Horror */}
+        <Carousel.Item>
+          <Link to="/horror" title="Vai alla sezione Libri Horror" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroHorror.jpg"
+              alt="Copertina Libri Horror"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+            <Carousel.Caption className="text-shadow-sm">
+              <h3 className="fw-bold">Horror</h3>
+              <p>Dove le ombre raccontano storie…e i libri respirano nel buio.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+
+        {/* SLIDE 4 - Romantico */}
+        <Carousel.Item>
+          <Link to="/romantico" title="Vai alla sezione Libri Romance" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroRomance.jpg"
+              alt="Copertina Libri Romantici"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+            <Carousel.Caption>
+              <h3 className="fw-bold">Romantico</h3>
+              <p>Per chi crede nei colpi di fulmine…e nei finali scritti bene.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+
+        {/* SLIDE 5 - Sci-Fi */}
+        <Carousel.Item>
+          <Link to="/scifi" title="Vai alla sezione Libri Sci-Fi" className="d-block position-relative">
+            <img
+              src="/img/heroPronte/heroSciFi.jpg"
+              alt="Copertina Libri Sci-Fi"
+              className="carousel-img d-block w-100"
+            />
+            <div className="hero-overlay" />
+            <Carousel.Caption>
+              <h3 className="fw-bold">Sci-Fi</h3>
+              <p>Galassie lontane, intelligenze artificiali e confini della realtà da esplorare.</p>
+            </Carousel.Caption>
+          </Link>
+        </Carousel.Item>
+      </Carousel>
+    </div>
+  );
 }
 
 export default Hero;
+
+- Footer.jsx:
+import React from "react";
+
+import { Col, Row, Container } from "react-bootstrap"
+import { Link } from "react-router-dom";
+
+function Footer() {
+
+    return (
+
+        <>
+            <Container className="mt-5">
+
+                <Row>
+                    <Col sm={12} md={4} className="d-flex flex-column">
+                        <Link to="/" className="footer-link">Home</Link>
+                        <Link to="/catalogo" className="footer-link">Catalogo</Link>
+                        <Link to="/categorie" className="footer-link">Categorie</Link>
+                        <Link to="/carrello" className="footer-link">Carrello</Link>
+
+                    </Col>
+
+                    <Col sm={12} md={4} className="d-flex flex-column">
+                        <Link to="/about" className="footer-link">Chi siamo</Link>
+                        <Link to="/faq" className="footer-link">Domande frequenti</Link>
+                        <Link to="/contatti" className="footer-link">Contattaci</Link>
+                        <Link to="/supporto" className="footer-link">Supporto</Link>
+
+                    </Col>
+
+                    <Col sm={12} md={4} className="d-flex flex-column">
+                        <Link to="/privacy" className="footer-link">Privacy Policy</Link>
+                        <Link to="/termini" className="footer-link">Termini e Condizioni</Link>
+                        <a href="https://www.instagram.com" target="_blank" rel="noreferrer" className="footer-link">Instagram</a>
+                        <a href="https://www.facebook.com" target="_blank" rel="noreferrer" className="footer-link">Facebook</a>
+
+                    </Col>
+
+                    <p className="text-center mt-4">&copy; Epi Books 2025. Tutti i diritti riservati.</p>
+
+                </Row>
+
+            </Container>
+
+        </>
+    )
+}
+
+export default Footer
+
+-BookCard.jsx:
+import { useState } from "react";
+import { Button, Card } from "react-bootstrap";
+
+
+function BookCard({ img, title, category }) {
+
+  const [count, setCount] = useState(0)
+  const handleClick = () => { if (count < 10) setCount(prev => prev + 1) };
+
+  return (
+    <Card style={{ width: "18rem" }} className="mb-3">
+      <Card.Img variant="top" src={img} alt={title} />
+      <Card.Body>
+        <Card.Title title={title}>{title}</Card.Title>
+        <Card.Text title={category}>{category}</Card.Text>
+        <Button variant="primary" onClick={handleClick}>Aggiungi ({count})</Button>
+      </Card.Body>
+    </Card>
+  );
+}
+
+export default BookCard;
+
+-BookSection.jsx:
+import React from "react";
+import { Button, Card, Container, Row, Col } from "react-bootstrap";
+
+function BookSection({ books, category }) {
+
+    return (
+        <>
+            <h1 className="m-4 text-center">{category}</h1>
+
+            <Container>
+                <Row className="g-3">
+                    {books.map((book) => (
+                        <Col key={book.asin} xs={12} sm={6} md={4} lg={3} >
+                            <Card className="mb-3 h-100">
+                                <Card.Img variant="top" src={book.img} alt={book.title} style={{ height: '400px', width: '100%', objectFit: 'cover' }} className="img-fluid" />
+                                <Card.Body className="d-flex flex-column">
+                                    <Card.Title title={book.title} className="text-truncate">{book.title}</Card.Title>
+                                    <Card.Text className="text-center fst-italic fw-semibold text-primary">Prezzo: € {book.price}</Card.Text>
+
+                                    <Button variant="primary" className="mt-auto">Aggiungi</Button>
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                    ))}
+
+                </Row>
+            </Container>
+        </>
+    )
+}
+
+export default BookSection
+
+SRC/PAGES:
+
+-Home.jsx:
+import React from "react";
+import { useOutletContext } from "react-router-dom";
+
+import Hero from "../components/Hero"
+import BookSection from "../components/BookSection";
+
+import fantasyBooks from "../data/fantasy.json"
+import historyBooks from "../data/history.json"
+import horrorBooks from "../data/horror.json"
+import romanceBooks from "../data/romance.json"
+import scifiBooks from "../data/scifi.json"
+
+
+
+function Home() {
+
+    const {filtroRicerca, temaChiaro} = useOutletContext()
+
+    const filtraLibri = (listaLibri) => listaLibri.filter((libro) => libro.title.toLowerCase().includes(filtroRicerca.toLowerCase()))
+
+    return (
+
+        <>
+
+            <Hero />
+
+            <BookSection books={fantasyBooks} category={"Fantasy"}></BookSection>
+            <BookSection books={historyBooks} category={"History"}></BookSection>
+            <BookSection books={horrorBooks} category={"Horror"}></BookSection>
+            <BookSection books={romanceBooks} category={"Romance"}></BookSection>
+            <BookSection books={scifiBooks} category={"Sci-Fi"}></BookSection>
+
+        </>
+    )
+}
+
+export default Home
