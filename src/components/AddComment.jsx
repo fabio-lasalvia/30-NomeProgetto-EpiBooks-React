@@ -1,8 +1,13 @@
 import { useState } from "react"
+import { Form, Button } from "react-bootstrap"
 
-function AddComment() {
+function AddComment({ asin }) {
 
-    const [datiForm, setDatiForm] = useState({ elementId: asin })
+    const [datiForm, setDatiForm] = useState({
+        elementId: asin,
+        comment: "",
+        rate: "1"
+    })
 
     const API_URL = 'https://striveschool-api.herokuapp.com/api/comments'
 
@@ -22,6 +27,9 @@ function AddComment() {
             .then(response => response.json())
             .then(data => {
                 console.log(data)
+            })
+            .catch(error => {
+                console.log('Errore nella fetch: ', error)
             })
     }
 
@@ -55,7 +63,8 @@ function AddComment() {
                         <option value="5">5</option>
                     </Form.Select>
                 </Form.Group>
-                <Button onClick={salvaDati}>Salva</Button>
+                <Button onClick={salvaDati} className="btn btn-primary btn-sm me-2 mt-2">Salva</Button>
+                <Button onClick={() => onDelete(comment._id)} className="btn btn-danger btn-sm mt-2">Elimina</Button>
             </Form>
         </>
     )

@@ -26,8 +26,8 @@ function CommentArea({ asin }) {
 
     return (
         <>
-            <AddComment asin = {asin} />
-            <CommentList comments={comments} />
+            <AddComment asin={asin} />
+            <CommentList comments={comments} setComments={setComments} asin={asin} />
         </>
     )
 }
