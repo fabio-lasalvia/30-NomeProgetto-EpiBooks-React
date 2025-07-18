@@ -1,21 +1,44 @@
 import { useState } from "react";
-import { Button, Card } from "react-bootstrap";
+import { Button, Card, Col } from "react-bootstrap";
+import CommentArea from "./commentArea";
 
 
-function BookCard({ img, title, category }) {
+function BookCard({ book }) {
 
-  const [count, setCount] = useState(0)
-  const handleClick = () => { if (count < 10) setCount(prev => prev + 1) };
+  const [selected, setSelected] = useState("");
 
   return (
-    <Card style={{ width: "18rem" }} className="mb-3">
-      <Card.Img variant="top" src={img} alt={title} />
-      <Card.Body>
-        <Card.Title title={title}>{title}</Card.Title>
-        <Card.Text title={category}>{category}</Card.Text>
-        <Button variant="primary" onClick={handleClick}>Aggiungi ({count})</Button>
-      </Card.Body>
-    </Card>
+    <>
+      <Col key={book.asin} xs={12} sm={6} md={4} lg={3}>
+        <Card className="mb-3 h-100">
+          <Card.Img
+            variant="top"
+            src={book.img}
+            alt={book.title}
+            style={{ height: "400px", width: "100%", objectFit: "cover" }}
+            className={`img-fluid ${selected === book.asin
+                ? "border border-3 border-danger"
+                : ""
+              } `}
+            onClick={() => setSelected(book.asin)}
+          />
+          <Card.Body className="d-flex flex-column">
+            <Card.Title title={book.title} className="text-truncate">
+              {book.title}
+            </Card.Title>
+            <Card.Text className="text-center fst-italic fw-semibold text-primary">
+              Prezzo: € {book.price}
+            </Card.Text>
+
+            <Button variant="primary" className="mt-auto">
+              Aggiungi
+            </Button>
+          </Card.Body>
+        </Card>
+      </Col>
+
+      {selected === book.asin && <CommentArea asin={book.asin}/>}
+    </>
   );
 }
 
